@@ -33,7 +33,7 @@ public class BookController {
 
         BookResponseDto bookResponseDto = bookService.addBook(requestDto);
 
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.ADD_SUCCESS, bookResponseDto));
+        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.ADD_BOOK_SUCCESS, bookResponseDto));
     }
 
     @GetMapping("/api/v1/books/search")
@@ -42,7 +42,7 @@ public class BookController {
 
         List<BookResponseDto> searchBooks = bookService.findAllByBookName(bookName);
 
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_SUCCESS, searchBooks));
+        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, searchBooks));
 
     }
 
@@ -52,7 +52,7 @@ public class BookController {
         BookResponseDto bookResponseDto = bookService.findBookBy(bookId);
 
         return ResponseEntity.ok(
-            ApiResponseDto.success(SuccessCode.SEARCH_SUCCESS, bookResponseDto));
+            ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, bookResponseDto));
     }
 
     @PatchMapping("/admin/books/{bookId}")
@@ -63,14 +63,14 @@ public class BookController {
         UpdateBookResponseDto updateBookResponseDto = bookService.updateBook(bookId, requestDto);
 
         return ResponseEntity.ok(
-            ApiResponseDto.success(SuccessCode.UPDATE_SUCCESS, updateBookResponseDto));
+            ApiResponseDto.success(SuccessCode.UPDATE_BOOK_SUCCESS, updateBookResponseDto));
     }
 
     @DeleteMapping("/admin/books/{bookId}")
-    public ResponseEntity<ApiResponseDto<DeleteBookResponseDto>> deleteBook(@PathVariable Long bookId) {
+    public ResponseEntity<ApiResponseDto<Void>> deleteBook(@PathVariable Long bookId) {
 
         bookService.deleteBook(bookId);
 
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.DELETE_SUCCESS));
+        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.DELETE_BOOK_SUCCESS));
     }
 }
