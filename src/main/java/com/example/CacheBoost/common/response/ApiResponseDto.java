@@ -34,6 +34,20 @@ public record ApiResponseDto<T>( // record: dto를 간결하게 작성하는 방
     }
 
     /**
+     * 성공 응답을 생성하는 메소드
+     * DELETE 등 응답을 성공했을 때 반환되는 데이터가 없을 때 사용
+     * @param successCode 성공 상태코드/메시지 Enum
+     * @return ApiResponseDto
+     */
+    public static <T> ApiResponseDto<T> success(final SuccessCode successCode) {
+        return new ApiResponseDto<>(
+            successCode.getHttpStatus().value(),
+            successCode.getMessage(),
+            null
+        );
+    }
+
+    /**
      * 실패 응답을 생성하는 메소드 (ErrorCode 기반)
      * 예를 들어 검색 조회에 실패했을 때 데이터에 path와 timestamp를 포함시켜서 같이 조회
      * @param errorCode 에러 코드 Enum
