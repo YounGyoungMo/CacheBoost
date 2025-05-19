@@ -12,6 +12,8 @@ public enum ErrorCode {
     BOOK_ALREADY_DELETED(HttpStatus.BAD_REQUEST,"삭제된 메뉴는 수정할 수 없습니다."),
     INVALID_BOOK_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 도서입니다."),
 
+    // 인증
+    MISSING_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않습니다."),
     ;
 
     private final HttpStatus httpStatus;
