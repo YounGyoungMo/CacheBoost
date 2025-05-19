@@ -5,7 +5,6 @@ import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.BookResponseDto;
-import com.example.CacheBoost.domain.book.dto.ResponseDto.DeleteBookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.UpdateBookResponseDto;
 import com.example.CacheBoost.domain.book.entity.Book;
 import com.example.CacheBoost.domain.book.repository.BookRepository;
