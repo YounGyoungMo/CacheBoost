@@ -4,7 +4,8 @@ import com.example.CacheBoost.common.exception.enums.SuccessCode;
 import com.example.CacheBoost.common.response.ApiResponseDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
-import com.example.CacheBoost.domain.book.dto.ResponseDto.BookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.AddBookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.GetBookListResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.GetSingleBookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.UpdateBookResponseDto;
 import com.example.CacheBoost.domain.book.service.BookService;
@@ -29,19 +30,19 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping("/admin/books")
-    public ResponseEntity<ApiResponseDto<BookResponseDto>> addBook(
+    public ResponseEntity<ApiResponseDto<AddBookResponseDto>> addBook(
         @RequestBody AddBookRequestDto requestDto) {
 
-        BookResponseDto bookResponseDto = bookService.addBook(requestDto);
+        AddBookResponseDto bookResponseDto = bookService.addBook(requestDto);
 
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.ADD_BOOK_SUCCESS, bookResponseDto));
     }
 
     @GetMapping("/api/v1/books/search")
-    public ResponseEntity<ApiResponseDto<List<BookResponseDto>>> searchBooks(
+    public ResponseEntity<ApiResponseDto<List<GetBookListResponseDto>>> searchBooks(
         @RequestParam String bookName) {
 
-        List<BookResponseDto> searchBooks = bookService.findAllByBookName(bookName);
+        List<GetBookListResponseDto> searchBooks = bookService.findAllByBookName(bookName);
 
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, searchBooks));
 

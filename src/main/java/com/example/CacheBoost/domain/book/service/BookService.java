@@ -4,7 +4,8 @@ import com.example.CacheBoost.common.exception.base.CustomException;
 import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
-import com.example.CacheBoost.domain.book.dto.ResponseDto.BookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.AddBookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.GetBookListResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.GetSingleBookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.UpdateBookResponseDto;
 import com.example.CacheBoost.domain.book.entity.Book;
@@ -21,20 +22,20 @@ public class BookService {
     private final BookRepository bookRepository;
 
     @Transactional
-    public BookResponseDto addBook(AddBookRequestDto requestDto) {
+    public AddBookResponseDto addBook(AddBookRequestDto requestDto) {
 
         // 권한 검증
 
         // 도서 저장
         Book book = bookRepository.save(new Book(requestDto));
 
-        return BookResponseDto.toDto(book);
+        return AddBookResponseDto.toDto(book);
     }
 
-    public List<BookResponseDto> findAllByBookName(String bookName) {
+    public List<GetBookListResponseDto> findAllByBookName(String bookName) {
         return bookRepository.findByAllBookName(bookName)
             .stream()
-            .map(BookResponseDto::toDto)
+            .map(GetBookListResponseDto::toDto)
             .toList();
     }
 
