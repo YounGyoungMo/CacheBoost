@@ -5,6 +5,7 @@ import com.example.CacheBoost.common.response.ApiResponseDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.BookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.GetSingleBookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.UpdateBookResponseDto;
 import com.example.CacheBoost.domain.book.service.BookService;
 import java.util.List;
@@ -47,12 +48,12 @@ public class BookController {
     }
 
     @GetMapping("/api/v1/books/{bookId}")
-    public ResponseEntity<ApiResponseDto<BookResponseDto>> findBookBy(@PathVariable Long bookId) {
+    public ResponseEntity<ApiResponseDto<GetSingleBookResponseDto>> findBookBy(@PathVariable Long bookId) {
 
-        BookResponseDto bookResponseDto = bookService.findBookBy(bookId);
+        GetSingleBookResponseDto getSingleBookResponseDto = bookService.findBookBy(bookId);
 
         return ResponseEntity.ok(
-            ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, bookResponseDto));
+            ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, getSingleBookResponseDto));
     }
 
     @PatchMapping("/admin/books/{bookId}")

@@ -5,6 +5,7 @@ import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.BookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.GetSingleBookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.UpdateBookResponseDto;
 import com.example.CacheBoost.domain.book.entity.Book;
 import com.example.CacheBoost.domain.book.repository.BookRepository;
@@ -38,7 +39,7 @@ public class BookService {
     }
 
 
-    public BookResponseDto findBookBy(Long bookId) {
+    public GetSingleBookResponseDto findBookBy(Long bookId) {
 
         // 도서 조회
         Book book = bookRepository.findByIdOrElseThrow(bookId);
@@ -48,7 +49,7 @@ public class BookService {
             throw new CustomException(ErrorCode.INVALID_BOOK_ID);
         }
 
-        return BookResponseDto.toDto(book);
+        return GetSingleBookResponseDto.toDto(book);
     }
 
     @Transactional
