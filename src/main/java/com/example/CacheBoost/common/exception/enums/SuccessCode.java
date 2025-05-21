@@ -19,7 +19,10 @@ public enum SuccessCode {
     SIGNUP_SUCCESS(HttpStatus.CREATED, "회원가입이 성공적으로 완료되었습니다."),
     TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "토큰 재발급에 성공하였습니다."),
 
-    ;
+    SEARCH_ADDRESS_SUCCESS(HttpStatus.OK, "주소 목록이 성공적으로 조회되었습니다."),
+    ADD_ADDRESS_SUCCESS(HttpStatus.CREATED, "주소가 성공적으로 추가되었습니다."),
+    UPDATE_ADDRESS_SUCCESS(HttpStatus.OK, "주소 정보가 성공적으로 수정되었습니다."),
+    DELETE_ADDRESS_SUCCESS(HttpStatus.NO_CONTENT, "주소가 성공적으로 삭제되었습니다.");
 
 
     private final HttpStatus httpStatus;
