@@ -1,5 +1,6 @@
 package com.example.CacheBoost.domain.book.controller;
 
+import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.common.exception.enums.SuccessCode;
 import com.example.CacheBoost.common.response.ApiResponseDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
@@ -44,7 +45,11 @@ public class BookController {
 
         List<GetBookListResponseDto> searchBooks = bookService.findAllByBookName(bookName);
 
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, searchBooks));
+        if (searchBooks.isEmpty()){
+            return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SUCCESS_SEARCH_RESULT_BOOK_NOT_FOUND, searchBooks));
+        } else {
+            return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, searchBooks));
+        }
 
     }
 
