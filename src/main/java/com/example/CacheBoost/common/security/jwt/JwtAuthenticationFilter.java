@@ -63,8 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     // UsernamePasswordAuthenticationToken( 유저 인증 정보 생성)
                     new UsernamePasswordAuthenticationToken(
                             requestDto.getEmail(),
-                            requestDto.getPassword(),
-                            null
+                            requestDto.getPassword()
                     )
             );
 

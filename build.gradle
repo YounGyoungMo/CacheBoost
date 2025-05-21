@@ -45,6 +45,8 @@ dependencies {
 
 	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// Security 테스트용 추가
+	testImplementation 'org.springframework.security:spring-security-test'
 
 }
 

@@ -42,7 +42,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(tokenValue)) {
             // "Bearer " 제거 substring
             tokenValue = jwtUtil.substringToken(tokenValue);
-            log.info(tokenValue);
+//            log.info(" token Value:{}",tokenValue);
 
             // 토큰 검증 로직(유효성 검사)
             jwtUtil.validateToken(tokenValue);

@@ -2,9 +2,12 @@ package com.example.CacheBoost.common.security.config;
 
 
 import com.example.CacheBoost.common.security.UserDetailsServiceImpl;
+import com.example.CacheBoost.common.security.handler.CustomAccessDeniedHandler;
+import com.example.CacheBoost.common.security.handler.CustomAuthenticationEntryPoint;
 import com.example.CacheBoost.common.security.jwt.JwtAuthenticationFilter;
 import com.example.CacheBoost.common.security.jwt.JwtAuthorizationFilter;
 import com.example.CacheBoost.common.security.jwt.JwtUtil;
+import com.example.CacheBoost.domain.user.entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +20,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -29,6 +33,9 @@ public class SecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
+    // 예외처리
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     // 인증 예외 화이트리스트
     private static final String[] USER_WHITE_LIST = {
@@ -69,7 +76,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AccessDeniedHandler accessDeniedHandler) throws Exception {
 
         http.csrf((csrf) -> csrf.disable());
 
@@ -79,10 +86,17 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-                        .requestMatchers(ADMIN_WHITE_LIST).permitAll() // 화이트리스트 요청 접근 허가
-                        .requestMatchers(USER_WHITE_LIST).permitAll()
+                        // ✅ 로그인은 필터를 거쳐야 하므로 permitAll 제거
+//                        .requestMatchers(LOGIN_URL).authenticated()
+                        .requestMatchers(USER_WHITE_LIST).permitAll()// 화이트리스트 요청 접근 허가
+                        .requestMatchers(ADMIN_WHITE_LIST).hasAuthority(Role.ADMIN.getKey())
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
 
+        );
+        // 예외 처리 추가
+        http.exceptionHandling(ex -> ex
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler)
         );
 
         // 필터 관리
