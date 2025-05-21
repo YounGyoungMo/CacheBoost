@@ -53,7 +53,7 @@ public class Book extends BaseTimeEntity {
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
         this.publisher = requestDto.getPublisher();
-        this.publishedData = requestDto.getPublishedData();
+        this.publishedData = requestDto.getPublishedDate();
         this.isbn = requestDto.getIsbn();
         this.author = requestDto.getAuthor();
         this.description = requestDto.getDescription();

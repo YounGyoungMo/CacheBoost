@@ -13,7 +13,7 @@ public class AddBookRequestDto {
 
     private final String publisher;
 
-    private final String publishedData;
+    private final String publishedDate;
 
     private final String isbn;
 
