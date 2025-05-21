@@ -32,7 +32,8 @@ public enum ErrorCode {
     EMPTY_JWT(HttpStatus.BAD_REQUEST, "잘못된 JWT 토큰입니다."),
     INVALID_LOGIN_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 로그인 요청입니다. 요청 포맷을 확인해주세요."),
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 올바르지 않습니다."),
-    ;
+    ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주소입니다."),
+    UNAUTHORIZED_ACCESS(HttpStatus.BAD_REQUEST, "해당 주소에 대한 접근 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
