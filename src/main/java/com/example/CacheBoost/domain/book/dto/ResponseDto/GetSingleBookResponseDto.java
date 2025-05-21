@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class BookResponseDto {
+public class GetSingleBookResponseDto {
 
     private final Long id;
 
@@ -17,7 +17,7 @@ public class BookResponseDto {
 
     private final String publisher;
 
-    private final String publishedDate;
+    private final String publishedData;
 
     private final String isbn;
 
@@ -31,8 +31,8 @@ public class BookResponseDto {
 
     private final LocalDateTime updatedAt;
 
-    public static BookResponseDto toDto(Book book) {
-        return new BookResponseDto(
+    public static GetSingleBookResponseDto toDto(Book book) {
+        return new GetSingleBookResponseDto(
             book.getId(),
             book.getName(),
             book.getPrice(),
@@ -46,4 +46,5 @@ public class BookResponseDto {
             book.getUpdatedAt()
         );
     }
+
 }

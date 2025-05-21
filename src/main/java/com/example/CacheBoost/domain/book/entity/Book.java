@@ -3,7 +3,14 @@ package com.example.CacheBoost.domain.book.entity;
 import com.example.CacheBoost.common.entity.BaseTimeEntity;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

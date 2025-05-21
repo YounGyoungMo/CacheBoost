@@ -4,7 +4,9 @@ import com.example.CacheBoost.common.exception.enums.SuccessCode;
 import com.example.CacheBoost.common.response.ApiResponseDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
-import com.example.CacheBoost.domain.book.dto.ResponseDto.BookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.AddBookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.GetBookListResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.GetSingleBookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.UpdateBookResponseDto;
 import com.example.CacheBoost.domain.book.service.BookService;
 
@@ -34,21 +36,23 @@ public class BookController {
     private final SearchKeywordService searchKeywordService;
 
     @PostMapping("/admin/books")
-    public ResponseEntity<ApiResponseDto<BookResponseDto>> addBook(
+
+    public ResponseEntity<ApiResponseDto<AddBookResponseDto>> addBook(
             @RequestBody AddBookRequestDto requestDto) {
 
-        BookResponseDto bookResponseDto = bookService.addBook(requestDto);
+        AddBookResponseDto bookResponseDto = bookService.addBook(requestDto);
 
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.ADD_BOOK_SUCCESS, bookResponseDto));
     }
 
     @GetMapping("/api/v1/books/search")
-    public ResponseEntity<ApiResponseDto<List<BookResponseDto>>> searchBooks(
+
+    public ResponseEntity<ApiResponseDto<List<GetBookListResponseDto>>> searchBooks(
             // 나중에 로그인 기능 추가되면 세션 or JWT로 처리하기
             @RequestParam Long userId,
             @RequestParam String bookName) {
 
-        List<BookResponseDto> searchBooks = bookService.findAllByName(bookName);
+        List<GetBookListResponseDto> searchBooks = bookService.findAllByBookName(bookName);
 
         // 검색 기록 저장 서비스 호출
         // 원래는 조회된 도서에 검색 기록까지 같이 반환하도록 하려 했지만 일단 보류 (도서와 검색 기록을 같이 반환하는 DTO를 따로 설계해야함)
@@ -57,17 +61,22 @@ public class BookController {
         // 인기 검색어 집계 서비스 호출
         searchKeywordService.saveSearchKeyword(bookName);
 
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, searchBooks));
+
+        if (searchBooks.isEmpty()){
+            return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SUCCESS_SEARCH_RESULT_BOOK_NOT_FOUND, searchBooks));
+        } else {
+            return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, searchBooks));
+        }
 
     }
 
     @GetMapping("/api/v1/books/{bookId}")
-    public ResponseEntity<ApiResponseDto<BookResponseDto>> findBookBy(@PathVariable Long bookId) {
+    public ResponseEntity<ApiResponseDto<GetSingleBookResponseDto>> findBookBy(@PathVariable Long bookId) {
 
-        BookResponseDto bookResponseDto = bookService.findBookBy(bookId);
+        GetSingleBookResponseDto getSingleBookResponseDto = bookService.findBookBy(bookId);
 
         return ResponseEntity.ok(
-                ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, bookResponseDto));
+            ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, getSingleBookResponseDto));
     }
 
     @PatchMapping("/admin/books/{bookId}")

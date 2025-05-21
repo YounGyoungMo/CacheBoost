@@ -3,7 +3,6 @@ package com.example.CacheBoost.domain.book.repository;
 import com.example.CacheBoost.common.exception.base.CustomException;
 import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.domain.book.entity.Book;
-import com.example.CacheBoost.domain.book.entity.Status;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +14,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     }
 
     @Query("SELECT b FROM Book b WHERE b.name LIKE %:bookName%")
-    List<Book> findAllByName(String bookName);
-
+    List<Book> findAllByBookName(String bookName);
 }

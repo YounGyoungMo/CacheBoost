@@ -4,7 +4,9 @@ import com.example.CacheBoost.common.exception.base.CustomException;
 import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
-import com.example.CacheBoost.domain.book.dto.ResponseDto.BookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.AddBookResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.GetBookListResponseDto;
+import com.example.CacheBoost.domain.book.dto.ResponseDto.GetSingleBookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.UpdateBookResponseDto;
 import com.example.CacheBoost.domain.book.entity.Book;
 import com.example.CacheBoost.domain.book.repository.BookRepository;
@@ -20,25 +22,25 @@ public class BookService {
     private final BookRepository bookRepository;
 
     @Transactional
-    public BookResponseDto addBook(AddBookRequestDto requestDto) {
+    public AddBookResponseDto addBook(AddBookRequestDto requestDto) {
 
         // 권한 검증
 
         // 도서 저장
         Book book = bookRepository.save(new Book(requestDto));
 
-        return BookResponseDto.toDto(book);
+        return AddBookResponseDto.toDto(book);
     }
 
-    public List<BookResponseDto> findAllByName(String bookName) {
-        return bookRepository.findAllByName(bookName)
+    public List<GetBookListResponseDto> findAllByBookName(String bookName) {
+        return bookRepository.findAllByBookName(bookName)
             .stream()
-            .map(BookResponseDto::toDto)
+            .map(GetBookListResponseDto::toDto)
             .toList();
     }
 
 
-    public BookResponseDto findBookBy(Long bookId) {
+    public GetSingleBookResponseDto findBookBy(Long bookId) {
 
         // 도서 조회
         Book book = bookRepository.findByIdOrElseThrow(bookId);
@@ -48,7 +50,7 @@ public class BookService {
             throw new CustomException(ErrorCode.INVALID_BOOK_ID);
         }
 
-        return BookResponseDto.toDto(book);
+        return GetSingleBookResponseDto.toDto(book);
     }
 
     @Transactional

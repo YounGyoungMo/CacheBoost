@@ -8,6 +8,7 @@ public enum SuccessCode {
 
     // 도서 관련
     SEARCH_BOOK_SUCCESS(HttpStatus.OK, "도서 검색 결과가 성공적으로 조회되었습니다. "),
+    SUCCESS_SEARCH_RESULT_BOOK_NOT_FOUND(HttpStatus.OK, "검색 결과, 해당 도서를 찾을 수 없습니다."),
     ADD_BOOK_SUCCESS(HttpStatus.CREATED, "도서 생성이 성공적으로 추가되었습니다. "),
     UPDATE_BOOK_SUCCESS(HttpStatus.OK, "도서 정보가 성공적으로 수정되었습니다. "),
     DELETE_BOOK_SUCCESS(HttpStatus.NO_CONTENT, "도서가 성공적으로 삭제되었습니다. "),
