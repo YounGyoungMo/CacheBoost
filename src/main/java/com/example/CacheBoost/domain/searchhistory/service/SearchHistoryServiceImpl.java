@@ -78,6 +78,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
     @Override
     public List<SearchKeywordResponseDto> getSearchKeywords() {
+
         return List.of();
     }
 }

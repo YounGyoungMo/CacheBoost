@@ -1,17 +1,29 @@
+### 회원가입
+POST localhost:8080/api/auth/signup
+content-type: application/json
 
+{
+  "name": "윤경모",
+  "email": "asdf123@naver.com",
+  "password": "asdasdjkDF!@#",
+  "role": "ADMIN"
+}
+
+### 유저 조회
+GET localhost:8080/api/auth/users/1
 
 ### 도서 생성
 POST localhost:8080/admin/books
 content-type: application/json
 
 {
-  "name" : "수학의 정석",
-  "price" : 7900,
-  "publisher" : "성지출판(주)",
-  "publishedDate" : "2015-05-19",
-  "isbn" : "978-3-16-148410-0",
-  "author" : "홍성대",
-  "description" : "수학의 정석입니다."
+  "name": "수학의 정석",
+  "price": 7900,
+  "publisher": "성지출판(주)",
+  "publishedDate": "2015-05-19",
+  "isbn": "978-3-16-148410-0",
+  "author": "홍성대",
+  "description": "수학의 정석입니다."
 }
 
 ### 도서 검색 (캐시 없는 버전) - 검색 기록도 같이 생성
@@ -26,7 +38,7 @@ PATCH localhost:8080/admin/books/1
 content-type: application/json
 
 {
-  "price" : 8000
+  "price": 8000
 }
 
 ### 도서 삭제
@@ -41,6 +53,7 @@ DELETE localhost:8080/api/v1/search-history?userId=1
 
 ### 인기 검색어 조회
 GET localhost:8080/api/v1/keywords/popular
+
 
 
 

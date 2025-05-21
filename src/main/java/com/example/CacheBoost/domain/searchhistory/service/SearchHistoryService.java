@@ -1,7 +1,5 @@
 package com.example.CacheBoost.domain.searchhistory.service;
 
-
-import com.example.CacheBoost.common.response.ApiResponseDto;
 import com.example.CacheBoost.domain.searchhistory.dto.ResponseDto.SearchHistoryResponseDto;
 import com.example.CacheBoost.domain.searchkeyword.dto.ResponseDto.SearchKeywordResponseDto;
 
