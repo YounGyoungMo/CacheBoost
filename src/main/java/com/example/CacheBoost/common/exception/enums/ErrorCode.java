@@ -12,6 +12,12 @@ public enum ErrorCode {
     BOOK_ALREADY_DELETED(HttpStatus.BAD_REQUEST,"삭제된 메뉴는 수정할 수 없습니다."),
     INVALID_BOOK_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 도서입니다."),
 
+    SEARCH_HISTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "검색기록이 존재하지 않습니다." ),
+
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자가 존재하지 않습니다." ),
+
+    SEARCH_KEYWORD_NOT_FOUND(HttpStatus.NOT_FOUND, "인기 검색어가 존재하지 않습니다."),
+
     ;
 
     private final HttpStatus httpStatus;

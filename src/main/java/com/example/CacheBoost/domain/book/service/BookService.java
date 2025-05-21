@@ -30,8 +30,8 @@ public class BookService {
         return BookResponseDto.toDto(book);
     }
 
-    public List<BookResponseDto> findAllByBookName(String bookName) {
-        return bookRepository.findByAllBookName(bookName)
+    public List<BookResponseDto> findAllByName(String bookName) {
+        return bookRepository.findAllByName(bookName)
             .stream()
             .map(BookResponseDto::toDto)
             .toList();

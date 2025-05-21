@@ -7,7 +7,11 @@ import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.BookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.UpdateBookResponseDto;
 import com.example.CacheBoost.domain.book.service.BookService;
+
 import java.util.List;
+
+import com.example.CacheBoost.domain.searchhistory.service.SearchHistoryService;
+import com.example.CacheBoost.domain.searchkeyword.service.SearchKeywordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,10 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
 
     private final BookService bookService;
+    private final SearchHistoryService searchHistoryService;
+    private final SearchKeywordService searchKeywordService;
 
     @PostMapping("/admin/books")
     public ResponseEntity<ApiResponseDto<BookResponseDto>> addBook(
-        @RequestBody AddBookRequestDto requestDto) {
+            @RequestBody AddBookRequestDto requestDto) {
 
         BookResponseDto bookResponseDto = bookService.addBook(requestDto);
 
@@ -38,9 +44,18 @@ public class BookController {
 
     @GetMapping("/api/v1/books/search")
     public ResponseEntity<ApiResponseDto<List<BookResponseDto>>> searchBooks(
-        @RequestParam String bookName) {
+            // 나중에 로그인 기능 추가되면 세션 or JWT로 처리하기
+            @RequestParam Long userId,
+            @RequestParam String bookName) {
 
-        List<BookResponseDto> searchBooks = bookService.findAllByBookName(bookName);
+        List<BookResponseDto> searchBooks = bookService.findAllByName(bookName);
+
+        // 검색 기록 저장 서비스 호출
+        // 원래는 조회된 도서에 검색 기록까지 같이 반환하도록 하려 했지만 일단 보류 (도서와 검색 기록을 같이 반환하는 DTO를 따로 설계해야함)
+        searchHistoryService.saveSearchHistory(userId, bookName);
+
+        // 인기 검색어 집계 서비스 호출
+        searchKeywordService.saveSearchKeyword(bookName);
 
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, searchBooks));
 
@@ -52,18 +67,18 @@ public class BookController {
         BookResponseDto bookResponseDto = bookService.findBookBy(bookId);
 
         return ResponseEntity.ok(
-            ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, bookResponseDto));
+                ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, bookResponseDto));
     }
 
     @PatchMapping("/admin/books/{bookId}")
     public ResponseEntity<ApiResponseDto<UpdateBookResponseDto>> updateBook(
-        @PathVariable Long bookId,
-        @RequestBody UpdateBookRequestDto requestDto) {
+            @PathVariable Long bookId,
+            @RequestBody UpdateBookRequestDto requestDto) {
 
         UpdateBookResponseDto updateBookResponseDto = bookService.updateBook(bookId, requestDto);
 
         return ResponseEntity.ok(
-            ApiResponseDto.success(SuccessCode.UPDATE_BOOK_SUCCESS, updateBookResponseDto));
+                ApiResponseDto.success(SuccessCode.UPDATE_BOOK_SUCCESS, updateBookResponseDto));
     }
 
     @DeleteMapping("/admin/books/{bookId}")

@@ -3,14 +3,7 @@ package com.example.CacheBoost.domain.book.entity;
 import com.example.CacheBoost.common.entity.BaseTimeEntity;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,7 +27,7 @@ public class Book extends BaseTimeEntity {
     private String publisher;
 
     @Column(nullable = false)
-    private String publishedDade;
+    private String publishedDate;
 
     @Column(nullable = false)
     private String isbn;
@@ -53,7 +46,7 @@ public class Book extends BaseTimeEntity {
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
         this.publisher = requestDto.getPublisher();
-        this.publishedDade = requestDto.getPublishedDade();
+        this.publishedDate = requestDto.getPublishedDate();
         this.isbn = requestDto.getIsbn();
         this.author = requestDto.getAuthor();
         this.description = requestDto.getDescription();

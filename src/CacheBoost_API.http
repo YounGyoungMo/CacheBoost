@@ -1,0 +1,50 @@
+
+
+### 도서 생성
+POST localhost:8080/admin/books
+content-type: application/json
+
+{
+  "name" : "수학의 정석",
+  "price" : 7900,
+  "publisher" : "성지출판(주)",
+  "publishedDate" : "2015-05-19",
+  "isbn" : "978-3-16-148410-0",
+  "author" : "홍성대",
+  "description" : "수학의 정석입니다."
+}
+
+### 도서 검색 (캐시 없는 버전) - 검색 기록도 같이 생성
+// 로그인 기능 구현되면 userId 없애기
+GET localhost:8080/api/v1/books/search?userId=1&bookName=수학
+
+### 도서 상세 조회 (캐시 없는 버전)
+GET localhost:8080/api/v1/books/1
+
+### 도서 수정
+PATCH localhost:8080/admin/books/1
+content-type: application/json
+
+{
+  "price" : 8000
+}
+
+### 도서 삭제
+DELETE localhost:8080/admin/books/1
+
+### 검색 기록 조회 (캐시 없는 버전) - 4개까지만 조회 (4개 초과시 가장 오래된 기록 자동 삭제)
+// 로그인 구현되면 userId 없애기
+GET localhost:8080/api/v1/search-history?userId=1
+
+### 검색 기록 삭제 (캐시 없는 버전) - 가장 오래된 기록 삭제
+DELETE localhost:8080/api/v1/search-history?userId=1
+
+### 인기 검색어 조회
+GET localhost:8080/api/v1/keywords/popular
+
+
+
+
+
+
+

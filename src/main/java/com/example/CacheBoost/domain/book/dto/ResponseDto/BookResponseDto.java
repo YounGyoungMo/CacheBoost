@@ -17,7 +17,7 @@ public class BookResponseDto {
 
     private final String publisher;
 
-    private final String publishedDade;
+    private final String publishedDate;
 
     private final String isbn;
 
@@ -37,7 +37,7 @@ public class BookResponseDto {
             book.getName(),
             book.getPrice(),
             book.getPublisher(),
-            book.getPublishedDade(),
+            book.getPublishedDate(),
             book.getIsbn(),
             book.getAuthor(),
             book.getDescription(),

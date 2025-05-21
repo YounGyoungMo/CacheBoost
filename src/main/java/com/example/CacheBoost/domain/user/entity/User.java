@@ -2,10 +2,7 @@ package com.example.CacheBoost.domain.user.entity;
 
 import com.example.CacheBoost.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
 public class User extends BaseTimeEntity {
 
     @Id
@@ -28,4 +26,12 @@ public class User extends BaseTimeEntity {
     private Role role;
 
     private LocalDateTime deletedAt;
+    
+    // 임의로 만든 User 생성자 (삭제 예정)
+    public User(String name, String email, String password, Role role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }
