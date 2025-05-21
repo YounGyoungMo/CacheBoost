@@ -4,11 +4,12 @@ package com.example.CacheBoost.common.security.jwt;
 import com.example.CacheBoost.common.exception.base.CustomException;
 import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.domain.user.entity.Role;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -17,6 +18,7 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j(topic = "JwtUtil")
 @Component
 public class JwtUtil {
 
@@ -24,6 +26,7 @@ public class JwtUtil {
     private static final long TOKEN_TIME = 1000 * 60 * 60L;
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";     // 관례
+    public static final Logger logger = LoggerFactory.getLogger("JWT 관련 로그");
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -46,16 +49,17 @@ public class JwtUtil {
         // payLoad
         Date now = new Date();
 
-        return Jwts.builder()
-                .setSubject(String.valueOf(userId))         // 토큰 주체
-                .setHeaderParam("typ", "JWT")   // 헤더 설정, 생략 가능(디버깅용)
-                .setIssuedAt(now)       // 발행 시간
-                .setExpiration(new Date(now.getTime() + TOKEN_TIME))   // 토큰 만료기한 (발급 일시 +60분)
-                .claim("userId", userId)    // Private Claims (Key-Value)
-                .claim("email", email)
-                .claim("role", role)
-                .signWith(key, signatureAlgorithm)  // 서명 (사용 알고리즘, 서명 생성-검증 용 비밀 키)
-                .compact();
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(String.valueOf(userId))         // 토큰 주체
+                        .setHeaderParam("typ", "JWT")   // 헤더 설정, 생략 가능(디버깅용)
+                        .setIssuedAt(now)       // 발급일(발행 시간)
+                        .setExpiration(new Date(now.getTime() + TOKEN_TIME))   // 토큰 만료기한 (발급 일시 +60분)
+                        .claim("userId", userId)    // Private Claims (Key-Value)
+                        .claim("email", email)
+                        .claim("role", role)
+                        .signWith(key, signatureAlgorithm)  // 서명 (사용 알고리즘, 서명 생성-검증 용 비밀 키)
+                        .compact();
 
     }
 
@@ -67,7 +71,7 @@ public class JwtUtil {
     }
 
     /**
-     * 토큰에서 바디(Claims) 추출
+     * 토큰에서 바디(Claims) 추출(토큰에서 사용자 정보 추출)
      */
     public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
@@ -75,6 +79,25 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public void validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token); // 실제 JWT 파싱 + 서명 검증
+             // 파싱 성공하면 토큰 유효
+        } catch (SecurityException | MalformedJwtException e) {
+            logger.error("유효하지 않는 JWT 서명 입니다.");
+            throw new CustomException(ErrorCode.INVALID_JWT_SIGNATURE);
+        }catch (ExpiredJwtException e) {
+            logger.error("만료된 JWT token 입니다. token = {}", token, e);
+            throw new CustomException(ErrorCode.EXPIRED_JWT);
+        } catch (UnsupportedJwtException e) {
+            logger.error("지원되지 않는 JWT 토큰 입니다.");
+            throw new CustomException(ErrorCode.UNSUPPORTED_JWT);
+        } catch (IllegalArgumentException e) {
+            logger.error("잘못된 JWT 토큰 입니다.");
+            throw new CustomException(ErrorCode.EMPTY_JWT);
+        }
     }
 
     //  만료일 확인 메소드

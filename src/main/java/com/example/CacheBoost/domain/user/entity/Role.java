@@ -1,7 +1,11 @@
 package com.example.CacheBoost.domain.user.entity;
 
 
+import com.example.CacheBoost.common.exception.base.CustomException;
+import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import lombok.Getter;
+
+import java.util.Arrays;
 
 @Getter
 public enum Role {
@@ -13,6 +17,15 @@ public enum Role {
     Role(String key, String title) {
         this.key = key;
         this.title = title;
+    }
+    // 정적 팩토리 메서드
+    public static Role of(String input) {
+        return Arrays.stream(Role.values())
+                .filter(role ->
+                        role.name().equalsIgnoreCase(input) || // role.name() == enum상수 ADMIN,USER
+                                role.key.equalsIgnoreCase(input))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_USER_ROLE));
     }
 
     @Override
