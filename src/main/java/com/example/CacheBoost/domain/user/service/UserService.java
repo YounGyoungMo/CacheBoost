@@ -31,6 +31,7 @@ public class UserService {
         return new UserResponseDto(user);
 
     }
+
     public UserResponseDto getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

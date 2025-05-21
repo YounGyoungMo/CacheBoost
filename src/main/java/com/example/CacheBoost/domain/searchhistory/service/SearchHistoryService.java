@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SearchHistoryService {
 
-    List<SearchHistoryResponseDto> saveSearchHistory(User user, String bookName);
+    List<SearchHistoryResponseDto> saveSearchHistory(Long userId, String bookName);
 
     List<SearchHistoryResponseDto> getSearchHistories(Long userId);
 

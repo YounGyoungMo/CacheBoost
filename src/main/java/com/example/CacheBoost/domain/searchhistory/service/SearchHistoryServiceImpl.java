@@ -26,9 +26,11 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
     private final UserRepository userRepository;
 
     @Override
-    public List<SearchHistoryResponseDto> saveSearchHistory(User user, String bookName) {
+    public List<SearchHistoryResponseDto> saveSearchHistory(Long userId, String bookName) {
 
-        if (user.getId() == null || bookName == null) {
+        User user = userRepository.findByIdOrElseThrow(userId);
+
+        if (userId == null || bookName == null) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
 

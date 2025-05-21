@@ -1,6 +1,7 @@
 package com.example.CacheBoost.domain.searchhistory.controller;
 
 import com.example.CacheBoost.common.response.ApiResponseDto;
+import com.example.CacheBoost.domain.auth.AuthUser;
 import com.example.CacheBoost.domain.searchhistory.dto.ResponseDto.SearchHistoryResponseDto;
 import com.example.CacheBoost.domain.searchhistory.service.SearchHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.CacheBoost.common.exception.enums.SuccessCode;
 
@@ -22,7 +22,7 @@ public class SearchHistoryController {
 
     @GetMapping("/api/v1/search-history")
     public ResponseEntity<ApiResponseDto<List<SearchHistoryResponseDto>>> getSearchHistories(
-            @RequestParam Long userId
+            @AuthUser Long userId
     ) {
         List<SearchHistoryResponseDto> searchHistories = searchService.getSearchHistories(userId);
 
@@ -34,11 +34,10 @@ public class SearchHistoryController {
 
     @DeleteMapping("/api/v1/search-history")
     public ResponseEntity<ApiResponseDto<List<SearchHistoryResponseDto>>> removeSearchHistories(
-            // 로그인 구현되면 userId 없애기
-            @RequestParam Long userId
+            @AuthUser Long userId
     ) {
         searchService.removeSearchHistory(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDto.success(SuccessCode.SEARCH_HISTORY_SUCCESS));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDto.success(SuccessCode.SEARCH_HISTORY_DELETE_SUCCESS));
     }
 
 

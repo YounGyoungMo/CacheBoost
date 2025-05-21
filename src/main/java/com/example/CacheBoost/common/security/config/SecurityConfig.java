@@ -39,7 +39,7 @@ public class SecurityConfig {
 
     // 인증 예외 화이트리스트
     private static final String[] USER_WHITE_LIST = {
-            "/api/auth/**",
+            "/api/auth/**"
     };
 
     private static final String[] ADMIN_WHITE_LIST = {
