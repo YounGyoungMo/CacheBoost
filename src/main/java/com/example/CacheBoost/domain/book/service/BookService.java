@@ -2,6 +2,7 @@ package com.example.CacheBoost.domain.book.service;
 
 import com.example.CacheBoost.common.exception.base.CustomException;
 import com.example.CacheBoost.common.exception.enums.ErrorCode;
+import com.example.CacheBoost.common.exception.enums.SuccessCode;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.AddBookResponseDto;
@@ -33,7 +34,7 @@ public class BookService {
     }
 
     public List<GetBookListResponseDto> findAllByBookName(String bookName) {
-        return bookRepository.findByAllBookName(bookName)
+        return bookRepository.findAllByBookName(bookName)
             .stream()
             .map(GetBookListResponseDto::toDto)
             .toList();
