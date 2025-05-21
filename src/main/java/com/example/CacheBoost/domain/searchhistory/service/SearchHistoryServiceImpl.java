@@ -26,21 +26,13 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
     private final UserRepository userRepository;
 
     @Override
-    public List<SearchHistoryResponseDto> saveSearchHistory(Long userId, String bookName) {
+    public List<SearchHistoryResponseDto> saveSearchHistory(User user, String bookName) {
 
-        if (userId == null || bookName == null) {
+        if (user.getId() == null || bookName == null) {
             throw new CustomException(ErrorCode.BAD_REQUEST);
         }
 
-        // UserController 가 없으므로 일단 임시로 User 생성 (나중에 없애기)
-        User user = userRepository.findById(userId)
-                .orElseGet(() -> userRepository.save(
-                        new User("윤경모", "asdf@naver.com", "ghah1819", Role.ADMIN)
-                ));
         userRepository.save(user);
-
-        // 위 코드 없애면 다시 주석 해제
-        //User user = userRepository.findByIdOrElseThrow(userId);
 
         SearchHistory searchHistory = SearchHistory.of(user, bookName);
 
@@ -48,7 +40,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
         // 검색 기록이 4개가 초과되면 이전에 저장된 가장 오래된 기록부터 삭제
         // 기록이 없을 수 있으므로 orElseThrow는 사용하지 않음.
-        List<SearchHistory> searchHistories = searchHistoryRepository.findAllByUserIdOrderByCreatedAt(userId);
+        List<SearchHistory> searchHistories = searchHistoryRepository.findAllByUserIdOrderByCreatedAt(user.getId());
         int maxHistoryCount = 4;
         if (searchHistories.size() > 4) {
             searchHistoryRepository.deleteAll(searchHistories.subList(0, searchHistories.size() - maxHistoryCount));

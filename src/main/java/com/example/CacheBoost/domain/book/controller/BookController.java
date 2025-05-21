@@ -2,6 +2,7 @@ package com.example.CacheBoost.domain.book.controller;
 
 import com.example.CacheBoost.common.exception.enums.SuccessCode;
 import com.example.CacheBoost.common.response.ApiResponseDto;
+import com.example.CacheBoost.domain.auth.AuthUser;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.AddBookResponseDto;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import com.example.CacheBoost.domain.searchhistory.service.SearchHistoryService;
 import com.example.CacheBoost.domain.searchkeyword.service.SearchKeywordService;
+import com.example.CacheBoost.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -49,14 +51,14 @@ public class BookController {
 
     public ResponseEntity<ApiResponseDto<List<GetBookListResponseDto>>> searchBooks(
             // 나중에 로그인 기능 추가되면 세션 or JWT로 처리하기
-            @RequestParam Long userId,
+            @AuthUser User user,
             @RequestParam String bookName) {
 
         List<GetBookListResponseDto> searchBooks = bookService.findAllByBookName(bookName);
 
         // 검색 기록 저장 서비스 호출
         // 원래는 조회된 도서에 검색 기록까지 같이 반환하도록 하려 했지만 일단 보류 (도서와 검색 기록을 같이 반환하는 DTO를 따로 설계해야함)
-        searchHistoryService.saveSearchHistory(userId, bookName);
+        searchHistoryService.saveSearchHistory(user, bookName);
 
         // 인기 검색어 집계 서비스 호출
         searchKeywordService.saveSearchKeyword(bookName);

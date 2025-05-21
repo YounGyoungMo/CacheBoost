@@ -1,6 +1,8 @@
 package com.example.CacheBoost.domain.user.service;
 
 
+import com.example.CacheBoost.common.exception.base.CustomException;
+import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.domain.user.dto.RequestDto.UserRequestDto;
 import com.example.CacheBoost.domain.user.dto.ResponseDto.UserResponseDto;
 import com.example.CacheBoost.domain.user.entity.User;
@@ -31,7 +33,12 @@ public class UserService {
     }
     public UserResponseDto getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         return new UserResponseDto(user);
+    }
+
+    public User findByIdOrElseThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 }
