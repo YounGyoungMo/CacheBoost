@@ -1,5 +1,7 @@
 package com.example.CacheBoost.common.security.jwt;
 
+import com.example.CacheBoost.common.exception.base.CustomException;
+import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.common.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -7,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -27,6 +30,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     // 이메일을 통해 사용자 정보 가져오기 위한 서비스
     private final UserDetailsServiceImpl userDetailsService;
+    // 블랙리스트 검증용 레디스 사용
+    private RedisTemplate<String, String> redisTemplate;
+
+    public void setRedisTemplate(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
         this.jwtUtil = jwtUtil;
@@ -38,13 +47,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 요청 헤더에서 JWT 토큰
         String tokenValue = request.getHeader("Authorization");
-//        log.info(" token Value:{}",tokenValue);
 
         if (StringUtils.hasText(tokenValue)) {
             // "Bearer " 제거 substring
             tokenValue = jwtUtil.substringToken(tokenValue);
-//            log.info(" subString token Value:{}",tokenValue);
-
+            // 블랙리스트에 등록된 AccessToken은 막음
+            if (Boolean.TRUE.equals(redisTemplate.hasKey("BL:" + tokenValue))) {
+                log.warn("🚫 블랙리스트 토큰 접근 시도");
+                throw new CustomException(ErrorCode.BLACKLISTED_TOKEN);
+            }
             // 토큰 검증 로직(유효성 검사)
             jwtUtil.validateToken(tokenValue);
             // 토큰에서 사용자 정보 추출

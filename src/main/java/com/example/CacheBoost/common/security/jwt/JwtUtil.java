@@ -129,4 +129,11 @@ public class JwtUtil {
     public Long getUserIdFromToken(String token) {
         return extractClaims(token).get("userId", Long.class);
     }
+
+    // 남은 기간 반환 메서드
+    public long getExpiration(String token) {
+        Date expiration = extractClaims(token).getExpiration();
+        long now = System.currentTimeMillis();
+        return expiration.getTime() - now;
+    }
 }

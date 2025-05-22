@@ -42,7 +42,8 @@ public class SecurityConfig {
 
     // 인증 예외 화이트리스트
     private static final String[] USER_WHITE_LIST = {
-            "/api/auth/**"
+            "/api/auth/**",
+            "/actuator/health",
     };
 
     private static final String[] ADMIN_WHITE_LIST = {
@@ -77,7 +78,10 @@ public class SecurityConfig {
     // 인가 필터
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        // RedisTemplate 주입
+        jwtAuthorizationFilter.setRedisTemplate(redisTemplate);
+        return jwtAuthorizationFilter;
     }
 
     @Bean

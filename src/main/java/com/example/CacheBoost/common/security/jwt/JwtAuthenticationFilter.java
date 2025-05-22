@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -78,7 +79,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        log.info("로그인 성공 및 JWT 생성");
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
         Long userId = userDetails.getUser().getId();
         String email = userDetails.getUser().getEmail();
@@ -87,8 +87,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = jwtUtil.createAccessToken(userId, email, role);
         String refreshToken = jwtUtil.createRefreshToken(userId);
 
-        // 레디스에 저장 7일 저장
-        redisTemplate.opsForValue().set("RT:" + userId, refreshToken, 7, TimeUnit.DAYS);
+        try {
+            // 레디스에 리프래시 토큰 7일 저장
+            redisTemplate.opsForValue().set("RT:" + userId, refreshToken, 7, TimeUnit.DAYS);
+        } catch (RedisConnectionFailureException e) {
+            log.error("❌ Redis 연결 실패 - RefreshToken 저장 불가 : {}", e.getMessage());
+            throw new CustomException(ErrorCode.REDIS_CONNECTION_FAILURE);
+        }
+        log.info("로그인 성공 및 JWT 생성");
         // 응답 타입 JSON 설정 및 인코딩 지정
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
