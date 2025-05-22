@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.example.CacheBoost.domain.searchhistory.service.SearchHistoryService;
 import com.example.CacheBoost.domain.searchkeyword.service.SearchKeywordService;
+import com.example.CacheBoost.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,13 +54,11 @@ public class BookController {
         // 인기 검색어 집계 서비스 호출
         searchKeywordService.saveSearchKeyword(bookName);
 
-
         if (searchBooks.isEmpty()){
             return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SUCCESS_SEARCH_RESULT_BOOK_NOT_FOUND, searchBooks));
         } else {
             return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, searchBooks));
         }
-
     }
 
     @GetMapping("/api/v1/books/{bookId}")

@@ -20,6 +20,7 @@ public enum SuccessCode {
     NO_SEARCH_HISTORY(HttpStatus.OK, "검색 기록이 존재하지 않습니다."),
     SEARCH_KEYWORD_SUCCESS(HttpStatus.OK, "인기 검색어가 성공적으로 조회되었습니다. "),
     SEARCH_HISTORY_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "가장 최근의 검색 기록이 삭제되었습니다. " ),
+    DELETE_ALL_SEARCH_HISTORY_SUCCESS(HttpStatus.NO_CONTENT, "모든 검색 기록이 삭제되었습니다."),
 
     // 회원가입 및 로그인 성공
     LOGIN_SUCCESS(HttpStatus.OK, "로그인에 성공하였습니다."),
@@ -31,6 +32,7 @@ public enum SuccessCode {
     ADD_ADDRESS_SUCCESS(HttpStatus.CREATED, "주소가 성공적으로 추가되었습니다."),
     UPDATE_ADDRESS_SUCCESS(HttpStatus.OK, "주소 정보가 성공적으로 수정되었습니다."),
     DELETE_ADDRESS_SUCCESS(HttpStatus.NO_CONTENT, "주소가 성공적으로 삭제되었습니다."),
+
 
     ;
 

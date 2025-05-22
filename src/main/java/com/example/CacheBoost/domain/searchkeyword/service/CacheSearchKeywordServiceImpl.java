@@ -5,20 +5,23 @@ import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.domain.searchkeyword.dto.ResponseDto.SearchKeywordResponseDto;
 import com.example.CacheBoost.domain.searchkeyword.entity.SearchKeyword;
 import com.example.CacheBoost.domain.searchkeyword.repository.SearchKeywordRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-@Primary
-@RequiredArgsConstructor
-public class SearchKeywordServiceImpl implements SearchKeywordService {
+@Service("searchKeywordCacheService")
+public class CacheSearchKeywordServiceImpl implements SearchKeywordService{
 
     private final SearchKeywordRepository searchKeywordRepository;
 
+    public CacheSearchKeywordServiceImpl(SearchKeywordRepository searchKeywordRepository) {
+        this.searchKeywordRepository = searchKeywordRepository;
+    }
+
     @Override
+    @CacheEvict(value="popularSearchKeywords", key= "'top5'")
     public void saveSearchKeyword(String bookName) {
         SearchKeyword searchKeyword = searchKeywordRepository.findByKeyword(bookName);
         if (searchKeyword == null) {
@@ -31,6 +34,7 @@ public class SearchKeywordServiceImpl implements SearchKeywordService {
     }
 
     @Override
+    @Cacheable(value="popularSearchKeywords", key= "'top5'")
     public List<SearchKeywordResponseDto> getSearchKeywords() {
         List<SearchKeyword> topKeywords =  searchKeywordRepository.findTop5ByOrderBySearchCntDescCreatedAtDesc();
 
