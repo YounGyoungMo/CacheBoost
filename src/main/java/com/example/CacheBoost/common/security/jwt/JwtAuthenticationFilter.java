@@ -16,26 +16,28 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-//    @Autowired
-//    private ObjectMapper objectMapper;
-
     private final JwtUtil jwtUtil;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    private RedisTemplate<String, String> redisTemplate;
+
+    public void setRedisTemplate(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -81,13 +83,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Long userId = userDetails.getUser().getId();
         String email = userDetails.getUser().getEmail();
         Role role = userDetails.getUser().getRole();
-        String token = jwtUtil.createToken(userId, email, role);
+        // 액세스 토큰과 리프래쉬 토큰 발급
+        String accessToken = jwtUtil.createAccessToken(userId, email, role);
+        String refreshToken = jwtUtil.createRefreshToken(userId);
+
+        // 레디스에 저장 7일 저장
+        redisTemplate.opsForValue().set("RT:" + userId, refreshToken, 7, TimeUnit.DAYS);
         // 응답 타입 JSON 설정 및 인코딩 지정
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         // 응답 Dto 생성
-        LoginResponseDto responseDto = new LoginResponseDto(token);
+        LoginResponseDto responseDto = new LoginResponseDto(accessToken,refreshToken);
         ApiResponseDto<LoginResponseDto> successResponse = ApiResponseDto.success(SuccessCode.LOGIN_SUCCESS, responseDto);
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(successResponse));

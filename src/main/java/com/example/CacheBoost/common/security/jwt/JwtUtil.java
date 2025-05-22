@@ -22,8 +22,10 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // 토큰 유효시간 60분
-    private static final long TOKEN_TIME = 1000 * 60 * 60L;
+    // 액세스 토큰 유효시간 30분
+    private static final long ACCESS_TOKEN_TIME = 1000 * 60 * 30L;
+    private static final long REFRESH_TOKEN_TIME = 1000 * 60 * 60L * 24 * 7;
+
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";     // 관례
     public static final Logger logger = LoggerFactory.getLogger("JWT 관련 로그");
@@ -41,10 +43,21 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
+    public String createAccessToken(Long userId, String email, Role role) {
+        // AccessToken 만료 시간 30분
+        return createToken(userId, email, role, ACCESS_TOKEN_TIME);
+    }
+
+    public String createRefreshToken(Long userId) {
+        // RefreshToken 만료 시간 7일
+        return createToken(userId, null, null, REFRESH_TOKEN_TIME);
+    }
+    
+
     /**
-     * Access Token 발급
+     *  Token 발급
      */
-    public String createToken(Long userId, String email, Role role) {
+    public String createToken(Long userId, String email, Role role,long expireTimeMs) {
 
         // payLoad
         Date now = new Date();
@@ -54,7 +67,7 @@ public class JwtUtil {
                         .setSubject(String.valueOf(userId))         // 토큰 주체
                         .setHeaderParam("typ", "JWT")   // 헤더 설정, 생략 가능(디버깅용)
                         .setIssuedAt(now)       // 발급일(발행 시간)
-                        .setExpiration(new Date(now.getTime() + TOKEN_TIME))   // 토큰 만료기한 (발급 일시 +60분)
+                        .setExpiration(new Date(now.getTime() + expireTimeMs))   // 토큰 만료기한 (발급 일시 +30분)
                         .claim("userId", userId)    // Private Claims (Key-Value)
                         .claim("email", email)
                         .claim("role", role)
@@ -112,4 +125,8 @@ public class JwtUtil {
                 .before(new Date());
     }
 
+    // userId 가져오기
+    public Long getUserIdFromToken(String token) {
+        return extractClaims(token).get("userId", Long.class);
+    }
 }

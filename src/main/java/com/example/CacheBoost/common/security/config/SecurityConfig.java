@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,6 +33,8 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    // 레디스 저장소
+    private final RedisTemplate<String, String> redisTemplate;
 
     // 예외처리
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
@@ -65,6 +68,8 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtil);
+        // RedisTemplate 주입
+        jwtAuthenticationFilter.setRedisTemplate(redisTemplate);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return jwtAuthenticationFilter;
     }
