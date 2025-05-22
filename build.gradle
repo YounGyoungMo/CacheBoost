@@ -38,6 +38,13 @@ dependencies {
 	// cache
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.apache.commons:commons-pool2' // 커넥션 풀
+
+	// LocalDateTime 등 Java 8 날짜 직렬화를 위한 모듈
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 	// bcrypt
 	implementation 'at.favre.lib:bcrypt:0.10.2'
 

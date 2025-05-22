@@ -17,6 +17,8 @@ import java.util.List;
 import com.example.CacheBoost.domain.searchhistory.service.SearchHistoryService;
 import com.example.CacheBoost.domain.searchkeyword.service.SearchKeywordService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,10 +45,12 @@ public class BookController {
 
 
     @ExecutionTimer("캐시를 이용한 도서 검색 API 전체 시간")
-    @GetMapping("/api/v1/books/search")
+    @GetMapping("/api/v2/books/search")
     public ResponseEntity<ApiResponseDto<List<GetBookListResponseDto>>> searchBooks_withCache(
             @AuthUser Long userId,
-            @RequestParam String bookName) {
+            @RequestParam String bookName,
+            @PageableDefault(size = 20) Pageable pageable
+    ) {
 
         List<GetBookListResponseDto> searchBooks = bookService.findAllByBookNameWithCache(bookName);
 
@@ -67,7 +71,7 @@ public class BookController {
     }
 
     @ExecutionTimer("도서 검색 API 전체 시간")
-    @GetMapping("/api/v2/books/search")
+    @GetMapping("/api/v1/books/search")
     public ResponseEntity<ApiResponseDto<List<GetBookListResponseDto>>> searchBooks(
             @AuthUser Long userId,
             @RequestParam String bookName) {
