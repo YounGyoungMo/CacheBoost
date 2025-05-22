@@ -1,16 +1,12 @@
 package com.example.CacheBoost.common.advice;
 
 import com.example.CacheBoost.common.exception.base.CustomException;
-import com.example.CacheBoost.common.exception.enums.ErrorCode;
+
 import com.example.CacheBoost.common.response.ApiResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

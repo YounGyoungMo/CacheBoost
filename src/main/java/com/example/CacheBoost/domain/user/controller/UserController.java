@@ -19,7 +19,7 @@ public class UserController {
         return ResponseEntity.ok(userService.signup(userRequestDto));
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/users/{email}")
     public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }

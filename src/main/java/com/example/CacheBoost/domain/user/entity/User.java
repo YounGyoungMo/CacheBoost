@@ -27,4 +27,12 @@ public class User extends BaseTimeEntity {
     private Role role;
 
     private LocalDateTime deletedAt;
+    
+    // 임의로 만든 User 생성자 (삭제 예정)
+    public User(String name, String email, String password, Role role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }

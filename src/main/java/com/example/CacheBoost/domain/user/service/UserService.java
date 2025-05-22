@@ -26,10 +26,12 @@ public class UserService {
                 .role(userRequestDto.getRole())
                 .build();
 
+
         userRepository.save(user);
         return new UserResponseDto(user);
 
     }
+
     public UserResponseDto getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

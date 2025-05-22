@@ -37,7 +37,7 @@ public class GetSingleBookResponseDto {
             book.getName(),
             book.getPrice(),
             book.getPublisher(),
-            book.getPublishedData(),
+            book.getPublishedDate(),
             book.getIsbn(),
             book.getAuthor(),
             book.getDescription(),

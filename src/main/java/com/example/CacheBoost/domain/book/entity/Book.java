@@ -34,7 +34,7 @@ public class Book extends BaseTimeEntity {
     private String publisher;
 
     @Column(nullable = false)
-    private String publishedData;
+    private String publishedDate;
 
     @Column(nullable = false)
     private String isbn;
@@ -53,7 +53,7 @@ public class Book extends BaseTimeEntity {
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
         this.publisher = requestDto.getPublisher();
-        this.publishedData = requestDto.getPublishedDate();
+        this.publishedDate = requestDto.getPublishedDate();
         this.isbn = requestDto.getIsbn();
         this.author = requestDto.getAuthor();
         this.description = requestDto.getDescription();
