@@ -38,11 +38,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 요청 헤더에서 JWT 토큰
         String tokenValue = request.getHeader("Authorization");
+//        log.info(" token Value:{}",tokenValue);
 
         if (StringUtils.hasText(tokenValue)) {
             // "Bearer " 제거 substring
             tokenValue = jwtUtil.substringToken(tokenValue);
-//            log.info(" token Value:{}",tokenValue);
+//            log.info(" subString token Value:{}",tokenValue);
 
             // 토큰 검증 로직(유효성 검사)
             jwtUtil.validateToken(tokenValue);
