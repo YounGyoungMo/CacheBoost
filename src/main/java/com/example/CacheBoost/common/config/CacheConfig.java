@@ -18,7 +18,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 public class CacheConfig {
     @Bean
     public CacheManager cacheManger() {
-        return new ConcurrentMapCacheManager("searchHistories", "popularSearchKeywords", "searchBook");
+        return new ConcurrentMapCacheManager("searchHistories", "popularSearchKeywords", "searchBook", "user");
     }
 
     /**

@@ -9,6 +9,7 @@ import com.example.CacheBoost.domain.user.dto.ResponseDto.UserResponseDto;
 import com.example.CacheBoost.domain.user.entity.User;
 import com.example.CacheBoost.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,7 @@ public class UserService {
 
     }
 
+    @Cacheable(value = "user", key = "#email")
     public UserResponseDto getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
