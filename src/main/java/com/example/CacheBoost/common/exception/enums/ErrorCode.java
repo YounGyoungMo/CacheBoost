@@ -40,6 +40,7 @@ public enum ErrorCode {
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 올바르지 않습니다."),
     EXTEND_LIMIT_EXCEEDED(HttpStatus.FORBIDDEN, "AccessToken은 최대 3회까지만 연장할 수 있습니다."),
     TOO_EARLY_TO_EXTEND(HttpStatus.BAD_REQUEST, "AccessToken은 만료 5분 이내일 때만 연장할 수 있습니다."),
+    ALREADY_AUTHENTICATED(HttpStatus.CONFLICT, "ALREADY_AUTHENTICATED"),
 
     ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주소입니다."),
     UNAUTHORIZED_ACCESS(HttpStatus.BAD_REQUEST, "해당 주소에 대한 접근 권한이 없습니다."),

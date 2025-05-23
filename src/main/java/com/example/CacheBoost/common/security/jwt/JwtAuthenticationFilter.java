@@ -19,13 +19,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.AntPathMatcher;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
@@ -57,6 +60,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             HttpServletResponse response
     ) throws AuthenticationException {
         log.info("로그인 시도");
+//        // 현재 인증된 사용자인가, 로그인된 유저인지 판별(재로그인 방지)
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+//            throw new CustomException(ErrorCode.ALREADY_AUTHENTICATED);
+//        }
         try {
             // 로그인 요청의 JSON 바디를 읽어서 Dto에 바인딩
             LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
@@ -83,6 +91,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Long userId = userDetails.getUser().getId();
         String email = userDetails.getUser().getEmail();
         Role role = userDetails.getUser().getRole();
+
+        // 해당 사용자의 기존 리프래쉬 토큰이 존재한다면 블랙리스트 처리
+        String oldRefreshToken = redisTemplate.opsForValue().get("RT:" + userId);
+        if (oldRefreshToken != null) {
+            redisTemplate.opsForValue().set("BL:" + oldRefreshToken, "RELOGIN", Duration.ofDays(7));
+            log.info("🔒 기존 RefreshToken 블랙리스트 등록 완료 (userId= {})", userId);
+        }
+
         // 액세스 토큰과 리프래쉬 토큰 발급
         String accessToken = jwtUtil.createAccessToken(new TokenPayload(userId, email, role));
         String refreshToken = jwtUtil.createRefreshToken(userId);
