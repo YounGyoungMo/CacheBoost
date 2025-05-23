@@ -1,11 +1,10 @@
-package com.example.CacheBoost.common.security.dto;
+package com.example.CacheBoost.domain.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LoginResponseDto {
+public class AccessTokenResponseDto {
     private String accessToken;
-    private String refreshToken;
 }

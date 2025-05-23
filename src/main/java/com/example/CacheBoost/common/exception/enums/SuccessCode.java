@@ -14,6 +14,7 @@ public enum SuccessCode {
     ADD_BOOK_SUCCESS(HttpStatus.CREATED, "도서 생성이 성공적으로 추가되었습니다. "),
     UPDATE_BOOK_SUCCESS(HttpStatus.OK, "도서 정보가 성공적으로 수정되었습니다. "),
     DELETE_BOOK_SUCCESS(HttpStatus.NO_CONTENT, "도서가 성공적으로 삭제되었습니다. "),
+    DUMMY_BOOKS_CREATED(HttpStatus.CREATED, "더미 데이터 생성 완료"),
 
     // 검색
     SEARCH_HISTORY_SUCCESS(HttpStatus.OK, "검색 기록이 성공적으로 조회되었습니다. "),
@@ -26,8 +27,8 @@ public enum SuccessCode {
     LOGIN_SUCCESS(HttpStatus.OK, "로그인에 성공하였습니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공하였습니다."),
     SIGNUP_SUCCESS(HttpStatus.CREATED, "회원가입이 성공적으로 완료되었습니다."),
-    TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "토큰 재발급에 성공하였습니다."),
-
+    TOKEN_REFRESH_SUCCESS(HttpStatus.OK, "AccessToken 성공적으로 재발급되었습니다."),
+    ACCESS_TOKEN_EXTENDED(HttpStatus.OK, "AccessToken이 성공적으로 연장되었습니다."),
     SEARCH_ADDRESS_SUCCESS(HttpStatus.OK, "주소 목록이 성공적으로 조회되었습니다."),
     ADD_ADDRESS_SUCCESS(HttpStatus.CREATED, "주소가 성공적으로 추가되었습니다."),
     UPDATE_ADDRESS_SUCCESS(HttpStatus.OK, "주소 정보가 성공적으로 수정되었습니다."),

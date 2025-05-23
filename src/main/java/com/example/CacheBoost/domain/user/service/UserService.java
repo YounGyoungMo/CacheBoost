@@ -3,6 +3,7 @@ package com.example.CacheBoost.domain.user.service;
 
 import com.example.CacheBoost.common.exception.base.CustomException;
 import com.example.CacheBoost.common.exception.enums.ErrorCode;
+import com.example.CacheBoost.domain.auth.dto.TokenPayload;
 import com.example.CacheBoost.domain.user.dto.RequestDto.UserRequestDto;
 import com.example.CacheBoost.domain.user.dto.ResponseDto.UserResponseDto;
 import com.example.CacheBoost.domain.user.entity.User;
@@ -43,5 +44,14 @@ public class UserService {
     public User findByIdOrElseThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    public TokenPayload getTokenPayloadByUserId(Long userId) {
+        User user = findByIdOrElseThrow(userId);
+        return TokenPayload.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
     }
 }
