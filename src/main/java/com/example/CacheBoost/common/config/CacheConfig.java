@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class CacheConfig {
     @Bean
     public CacheManager cacheManger() {
-        return new ConcurrentMapCacheManager("searchHistories", "popularSearchKeywords");
+        return new ConcurrentMapCacheManager("searchHistories", "popularSearchKeywords", "user");
     }
 
 }
