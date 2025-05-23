@@ -31,7 +31,6 @@ public class BookController {
     private final SearchKeywordService searchKeywordService;
 
     @PostMapping("/admin/books")
-
     public ResponseEntity<ApiResponseDto<AddBookResponseDto>> addBook(
             @RequestBody AddBookRequestDto requestDto) {
 
