@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,6 +33,8 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    // 레디스 저장소
+    private final RedisTemplate<String, String> redisTemplate;
 
     // 예외처리
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
@@ -39,7 +42,8 @@ public class SecurityConfig {
 
     // 인증 예외 화이트리스트
     private static final String[] USER_WHITE_LIST = {
-            "/api/auth/**"
+            "/api/auth/**",
+            "/actuator/health",
     };
 
     private static final String[] ADMIN_WHITE_LIST = {
@@ -65,6 +69,8 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtil);
+        // RedisTemplate 주입
+        jwtAuthenticationFilter.setRedisTemplate(redisTemplate);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return jwtAuthenticationFilter;
     }
@@ -72,7 +78,10 @@ public class SecurityConfig {
     // 인가 필터
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        // RedisTemplate 주입
+        jwtAuthorizationFilter.setRedisTemplate(redisTemplate);
+        return jwtAuthorizationFilter;
     }
 
     @Bean

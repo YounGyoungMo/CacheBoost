@@ -1,13 +1,17 @@
 package com.example.CacheBoost.domain.book.dto.ResponseDto;
 
 import com.example.CacheBoost.domain.book.entity.Book;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class GetBookListResponseDto {
+public class GetBookListResponseDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final Long id;
 
