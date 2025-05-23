@@ -5,20 +5,22 @@ import com.example.CacheBoost.common.exception.enums.ErrorCode;
 import com.example.CacheBoost.domain.searchhistory.dto.ResponseDto.SearchHistoryResponseDto;
 import com.example.CacheBoost.domain.searchhistory.entity.SearchHistory;
 import com.example.CacheBoost.domain.searchhistory.repository.SearchHistoryRepository;
-
 import com.example.CacheBoost.domain.searchkeyword.repository.SearchKeywordRepository;
 import com.example.CacheBoost.domain.user.entity.User;
 import com.example.CacheBoost.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service("searchHistoryCacheService")
 @RequiredArgsConstructor
-public class CachedSearchHistoryServiceImpl implements SearchHistoryService{
+public class CachedSearchHistoryServiceImpl implements CachedSearchHistoryService{
 
     private final SearchHistoryRepository searchHistoryRepository;
     private final SearchKeywordRepository searchKeywordRepository;
@@ -47,16 +49,18 @@ public class CachedSearchHistoryServiceImpl implements SearchHistoryService{
             searchHistoryRepository.deleteAll(searchHistories.subList(0, searchHistories.size() - maxHistoryCount));
         }
     }
-    
+
     // 검색 기록 가져온 후 캐시 저장(다음에 가져올 때는 캐시로 가져옴)
     @Override
-    @Cacheable(value = "searchHistories", key = "#userId")
-    public List<SearchHistoryResponseDto> getSearchHistories(Long userId) {
-        List<SearchHistory> searchHistories = searchHistoryRepository.findCachedSearchHistoriesByUserId(userId);
+    @Cacheable(
+            value = "searchHistories",
+            key = "#userId + ':' + #keyword + ':' + #pageable.pageNumber + ':' + #pageable.sort.toString()"
+    )
+    @Transactional(readOnly = true)
+    public Page<SearchHistoryResponseDto> getSearchHistories(Long userId, String keyword, Pageable pageable) {
+        Page<SearchHistory> searchHistories = searchHistoryRepository.findByUserIdAndKeywordContaining(userId, keyword, pageable);
 
-        return searchHistories.stream()
-                .map(SearchHistory::from)
-                .toList();
+        return searchHistories.map(SearchHistory::from);
     }
 
     // 데이터 모두 삭제후 캐시 모두 삭제
@@ -66,5 +70,5 @@ public class CachedSearchHistoryServiceImpl implements SearchHistoryService{
         List<SearchHistory> searchHistories = searchHistoryRepository.findAllByUserIdOrderByCreatedAt(userId);
         searchHistoryRepository.deleteAll(searchHistories);
     }
-
 }
+
