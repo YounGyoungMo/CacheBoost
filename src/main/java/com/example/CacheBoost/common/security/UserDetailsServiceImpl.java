@@ -25,4 +25,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return new UserDetailsImpl(user);
     }
+    // userId로 추출
+    public UserDetails loadUserByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return new UserDetailsImpl(user);
+    }
 }

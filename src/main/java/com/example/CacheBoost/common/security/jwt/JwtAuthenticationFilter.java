@@ -8,13 +8,13 @@ import com.example.CacheBoost.common.response.ErrorData;
 import com.example.CacheBoost.common.security.UserDetailsImpl;
 import com.example.CacheBoost.common.security.dto.LoginRequestDto;
 import com.example.CacheBoost.common.security.dto.LoginResponseDto;
+import com.example.CacheBoost.domain.auth.dto.TokenPayload;
 import com.example.CacheBoost.domain.user.entity.Role;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -84,8 +84,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String email = userDetails.getUser().getEmail();
         Role role = userDetails.getUser().getRole();
         // 액세스 토큰과 리프래쉬 토큰 발급
-        String accessToken = jwtUtil.createAccessToken(userId, email, role);
+        String accessToken = jwtUtil.createAccessToken(new TokenPayload(userId, email, role));
         String refreshToken = jwtUtil.createRefreshToken(userId);
+        // Bearer 제거하고 저장
+        refreshToken = jwtUtil.substringToken(refreshToken);
 
         try {
             // 레디스에 리프래시 토큰 7일 저장

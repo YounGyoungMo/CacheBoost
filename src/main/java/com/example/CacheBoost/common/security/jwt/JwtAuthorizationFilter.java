@@ -58,11 +58,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
             // 토큰 검증 로직(유효성 검사)
             jwtUtil.validateToken(tokenValue);
+            log.info("토큰 검증 완료");
             // 토큰에서 사용자 정보 추출
             Claims claims = jwtUtil.extractClaims(tokenValue);
 
             try {
-                setAuthenticaiton((String) claims.get("email"));
+                setAuthenticaiton(claims.get("userId", Long.class));
             } catch (Exception e) {
                 log.error(e.getMessage());
             }
@@ -71,16 +72,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     // 인증 처리
-    public void setAuthenticaiton(String email) {
+    public void setAuthenticaiton(Long userId) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = createAuthentication(email);
+        Authentication authentication = createAuthentication(userId);
         securityContext.setAuthentication(authentication);
 
     }
 
     // 인증 객체 생성
-    private Authentication createAuthentication(String email) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+    private Authentication createAuthentication(Long userId) {
+        UserDetails userDetails = userDetailsService.loadUserByUserId(userId);
         // UsernamePasswordAuthenticationToken: 스프링 시큐리티에서 가장 기본적인 Authentication 구현체
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }

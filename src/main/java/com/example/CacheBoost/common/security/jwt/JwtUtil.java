@@ -3,6 +3,7 @@ package com.example.CacheBoost.common.security.jwt;
 
 import com.example.CacheBoost.common.exception.base.CustomException;
 import com.example.CacheBoost.common.exception.enums.ErrorCode;
+import com.example.CacheBoost.domain.auth.dto.TokenPayload;
 import com.example.CacheBoost.domain.user.entity.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -43,9 +44,14 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createAccessToken(Long userId, String email, Role role) {
+    public String extendAccessToken(TokenPayload tokenPayload,long expireTimeMs) {
         // AccessToken 만료 시간 30분
-        return createToken(userId, email, role, ACCESS_TOKEN_TIME);
+        return createToken(tokenPayload.getUserId(), tokenPayload.getEmail(), tokenPayload.getRole(), expireTimeMs);
+    }
+
+    public String createAccessToken(TokenPayload tokenPayload) {
+        // AccessToken 만료 시간 30분
+        return createToken(tokenPayload.getUserId(), tokenPayload.getEmail(), tokenPayload.getRole(), ACCESS_TOKEN_TIME);
     }
 
     public String createRefreshToken(Long userId) {
@@ -129,11 +135,32 @@ public class JwtUtil {
     public Long getUserIdFromToken(String token) {
         return extractClaims(token).get("userId", Long.class);
     }
+    // email 가져오기
+    public String getUserEmailFromToken(String token) {
+        return extractClaims(token).get("email", String.class);
+    }
+    // Role 가져오기
+    public Role getUserRoleFromToken(String token) {
+        return extractClaims(token).get("role", Role.class);
+    }
+
 
     // 남은 기간 반환 메서드
     public long getExpiration(String token) {
         Date expiration = extractClaims(token).getExpiration();
         long now = System.currentTimeMillis();
         return expiration.getTime() - now;
+    }
+
+    // 토큰을 통해 페이로드 추출
+    public TokenPayload getPayload(String token) {
+        Long userId = getUserIdFromToken(token);
+        String email = getUserEmailFromToken(token);
+        Role role = getUserRoleFromToken(token);
+        return TokenPayload.builder()
+                .userId(userId)
+                .email(email)
+                .role(role)
+                .build();
     }
 }
