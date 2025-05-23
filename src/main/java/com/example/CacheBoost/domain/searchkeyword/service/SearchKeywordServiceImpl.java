@@ -6,11 +6,13 @@ import com.example.CacheBoost.domain.searchkeyword.dto.ResponseDto.SearchKeyword
 import com.example.CacheBoost.domain.searchkeyword.entity.SearchKeyword;
 import com.example.CacheBoost.domain.searchkeyword.repository.SearchKeywordRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Primary
 @RequiredArgsConstructor
 public class SearchKeywordServiceImpl implements SearchKeywordService {
 

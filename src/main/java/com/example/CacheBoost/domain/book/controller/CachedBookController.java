@@ -4,42 +4,35 @@ import com.example.CacheBoost.common.exception.enums.SuccessCode;
 import com.example.CacheBoost.common.response.ApiResponseDto;
 import com.example.CacheBoost.domain.auth.AuthUser;
 import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
-import com.example.CacheBoost.domain.book.dto.RequestDto.UpdateBookRequestDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.AddBookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.GetBookListResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.GetSingleBookResponseDto;
-import com.example.CacheBoost.domain.book.dto.ResponseDto.UpdateBookResponseDto;
-import com.example.CacheBoost.domain.book.service.BookService;
-
-import java.util.List;
-
+import com.example.CacheBoost.domain.book.service.CacheBookService;
 import com.example.CacheBoost.domain.searchhistory.service.SearchHistoryService;
 import com.example.CacheBoost.domain.searchkeyword.service.SearchKeywordService;
-import com.example.CacheBoost.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping
-public class BookController {
+public class CachedBookController {
 
-    private final BookService bookService;
+    private final CacheBookService bookService;
     private final SearchHistoryService searchHistoryService;
     private final SearchKeywordService searchKeywordService;
 
-    @PostMapping("/admin/books")
-    public ResponseEntity<ApiResponseDto<AddBookResponseDto>> addBook(
-            @RequestBody AddBookRequestDto requestDto) {
-
-        AddBookResponseDto bookResponseDto = bookService.addBook(requestDto);
-
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.ADD_BOOK_SUCCESS, bookResponseDto));
-    }
-
-    @GetMapping("/api/v1/books/search")
+    @GetMapping("/api/v2/books/search")
     public ResponseEntity<ApiResponseDto<List<GetBookListResponseDto>>> searchBooks(
             @AuthUser Long userId,
             @RequestParam String bookName) {
@@ -53,14 +46,15 @@ public class BookController {
         // 인기 검색어 집계 서비스 호출
         searchKeywordService.saveSearchKeyword(bookName);
 
-        if (searchBooks.isEmpty()){
+        if (searchBooks.isEmpty()) {
             return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SUCCESS_SEARCH_RESULT_BOOK_NOT_FOUND, searchBooks));
         } else {
             return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, searchBooks));
         }
+
     }
 
-    @GetMapping("/api/v1/books/{bookId}")
+    @GetMapping("/api/v2/books/{bookId}")
     public ResponseEntity<ApiResponseDto<GetSingleBookResponseDto>> findBookBy(@PathVariable Long bookId) {
 
         GetSingleBookResponseDto getSingleBookResponseDto = bookService.findBookBy(bookId);
@@ -69,22 +63,5 @@ public class BookController {
             ApiResponseDto.success(SuccessCode.SEARCH_BOOK_SUCCESS, getSingleBookResponseDto));
     }
 
-    @PatchMapping("/admin/books/{bookId}")
-    public ResponseEntity<ApiResponseDto<UpdateBookResponseDto>> updateBook(
-            @PathVariable Long bookId,
-            @RequestBody UpdateBookRequestDto requestDto) {
 
-        UpdateBookResponseDto updateBookResponseDto = bookService.updateBook(bookId, requestDto);
-
-        return ResponseEntity.ok(
-                ApiResponseDto.success(SuccessCode.UPDATE_BOOK_SUCCESS, updateBookResponseDto));
-    }
-
-    @DeleteMapping("/admin/books/{bookId}")
-    public ResponseEntity<ApiResponseDto<Void>> deleteBook(@PathVariable Long bookId) {
-
-        bookService.deleteBook(bookId);
-
-        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.DELETE_BOOK_SUCCESS));
-    }
 }

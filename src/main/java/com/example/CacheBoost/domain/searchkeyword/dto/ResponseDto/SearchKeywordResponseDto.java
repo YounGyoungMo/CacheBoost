@@ -17,4 +17,8 @@ public class SearchKeywordResponseDto {
     public static SearchKeywordResponseDto from(SearchKeyword searchKeyword) {
         return new SearchKeywordResponseDto(searchKeyword.getId(), searchKeyword.getKeyword(), searchKeyword.getSearchCnt(), searchKeyword.getCreatedAt());
     }
+
+    public static SearchKeywordResponseDto fromKeyword(String keyword) {
+        return new SearchKeywordResponseDto(null, keyword, null, null);
+    }
 }
