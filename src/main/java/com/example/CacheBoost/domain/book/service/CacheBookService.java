@@ -12,25 +12,17 @@ import com.example.CacheBoost.domain.book.entity.Book;
 import com.example.CacheBoost.domain.book.repository.BookRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class BookService {
+public class CacheBookService {
 
     private final BookRepository bookRepository;
 
-    @Transactional
-    public AddBookResponseDto addBook(AddBookRequestDto requestDto) {
-
-        // 도서 저장
-        Book book = bookRepository.save(new Book(requestDto));
-
-        return AddBookResponseDto.toDto(book);
-    }
-
+    @Cacheable(value = "searchBook", key = "#bookName")
     public List<GetBookListResponseDto> findAllByBookName(String bookName) {
         return bookRepository.findAllByBookName(bookName)
             .stream()
@@ -38,7 +30,7 @@ public class BookService {
             .toList();
     }
 
-
+    @Cacheable(value = "searchBook", key = "#bookId")
     public GetSingleBookResponseDto findBookBy(Long bookId) {
 
         // 도서 조회
@@ -52,32 +44,4 @@ public class BookService {
         return GetSingleBookResponseDto.toDto(book);
     }
 
-    @Transactional
-    @CacheEvict(value = "searchBook", key = "#bookId")
-    public UpdateBookResponseDto updateBook(Long bookId, UpdateBookRequestDto requestDto) {
-
-        // 도서 조회
-        Book book = bookRepository.findByIdOrElseThrow(bookId);
-
-        // 삭제된 도서 검증
-        if(book.isDeleted()){
-            throw new CustomException(ErrorCode.BOOK_ALREADY_DELETED);
-        }
-
-        // 도서 수정
-        book.updateBook(requestDto);
-
-        return UpdateBookResponseDto.toDto(book);
-    }
-
-    @Transactional
-    @CacheEvict(value = "searchBook", key = "#bookId")
-    public void deleteBook(Long bookId) {
-
-        // 도서 조회
-        Book book = bookRepository.findByIdOrElseThrow(bookId);
-
-        book.deleteBook();
-
-    }
 }
