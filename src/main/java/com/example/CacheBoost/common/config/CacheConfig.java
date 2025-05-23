@@ -21,15 +21,6 @@ public class CacheConfig {
         return new ConcurrentMapCacheManager("searchHistories", "popularSearchKeywords", "searchBook", "user");
     }
 
-    /**
-     * StringRedisTemplate는 문자열을 다루기 쉽게 해주는 템플릿
-     * @param connectionFactory
-     * @return
-     */
-    @Bean
-    public StringRedisTemplate redisTemplate(RedisConnectionFactory connectionFactory) {
-        return new StringRedisTemplate(connectionFactory);
-    }
 
 
 }
