@@ -1,4 +1,4 @@
-package com.example.CacheBoost.domain.kcRedis.service;
+package com.example.CacheBoost.common.redis.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
