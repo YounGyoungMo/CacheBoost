@@ -87,4 +87,10 @@ public class BookController {
 
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.DELETE_BOOK_SUCCESS));
     }
+
+    @PostMapping("/api/v1/books/dummy-generate")
+    public ResponseEntity<ApiResponseDto<String>> generateDummyBooks(@RequestParam(defaultValue = "1000") int count) {
+        bookService.generateDummyBooksParallel(count);
+        return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.DUMMY_BOOKS_CREATED));
+    }
 }
