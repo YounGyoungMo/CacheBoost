@@ -1,4 +1,4 @@
-package com.example.CacheBoost.domain.kcRedis.service;
+package com.example.CacheBoost.common.redis.service;
 
 public interface RedisService {
     void save(String key, String value);
