@@ -23,7 +23,6 @@ import java.util.List;
 public class CachedSearchHistoryServiceImpl implements CachedSearchHistoryService{
 
     private final SearchHistoryRepository searchHistoryRepository;
-    private final SearchKeywordRepository searchKeywordRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -52,15 +51,12 @@ public class CachedSearchHistoryServiceImpl implements CachedSearchHistoryServic
 
     // 검색 기록 가져온 후 캐시 저장(다음에 가져올 때는 캐시로 가져옴)
     @Override
-    @Cacheable(
-            value = "searchHistories",
-            key = "#userId + ':' + #keyword + ':' + #pageable.pageNumber + ':' + #pageable.sort.toString()"
-    )
+    @Cacheable(value = "searchHistories", key = "#userId")
     @Transactional(readOnly = true)
-    public Page<SearchHistoryResponseDto> getSearchHistories(Long userId, String keyword, Pageable pageable) {
-        Page<SearchHistory> searchHistories = searchHistoryRepository.findByUserIdAndKeywordContaining(userId, keyword, pageable);
+    public List<SearchHistoryResponseDto> getSearchHistories(Long userId) {
+        List<SearchHistory> searchHistories = searchHistoryRepository.findCachedSearchHistoriesByUserId(userId);
 
-        return searchHistories.map(SearchHistory::from);
+        return searchHistories.stream().map(SearchHistory::from).toList();
     }
 
     // 데이터 모두 삭제후 캐시 모두 삭제

@@ -3,20 +3,15 @@ package com.example.CacheBoost.domain.book.controller;
 import com.example.CacheBoost.common.exception.enums.SuccessCode;
 import com.example.CacheBoost.common.response.ApiResponseDto;
 import com.example.CacheBoost.domain.auth.AuthUser;
-import com.example.CacheBoost.domain.book.dto.RequestDto.AddBookRequestDto;
-import com.example.CacheBoost.domain.book.dto.ResponseDto.AddBookResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.GetBookListResponseDto;
 import com.example.CacheBoost.domain.book.dto.ResponseDto.GetSingleBookResponseDto;
 import com.example.CacheBoost.domain.book.service.CacheBookService;
 import com.example.CacheBoost.domain.searchhistory.service.SearchHistoryService;
-import com.example.CacheBoost.domain.searchkeyword.service.SearchKeywordService;
+import com.example.CacheBoost.domain.searchkeyword.service.CacheSearchKeywordService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +25,7 @@ public class CachedBookController {
 
     private final CacheBookService bookService;
     private final SearchHistoryService searchHistoryService;
-    private final SearchKeywordService searchKeywordService;
+    private final CacheSearchKeywordService searchKeywordService;
 
     @GetMapping("/api/v2/books/search")
     public ResponseEntity<ApiResponseDto<List<GetBookListResponseDto>>> searchBooks(
