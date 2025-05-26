@@ -17,5 +17,4 @@ public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Lo
 
     List<SearchHistory> findCachedSearchHistoriesByUserId(Long userId);
 
-    Page<SearchHistory> findByUserIdAndKeywordContaining(Long userId, String keywords, Pageable pageable);
 }
