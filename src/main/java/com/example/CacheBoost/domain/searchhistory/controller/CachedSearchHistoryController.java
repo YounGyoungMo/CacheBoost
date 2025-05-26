@@ -4,11 +4,8 @@ import com.example.CacheBoost.common.exception.enums.SuccessCode;
 import com.example.CacheBoost.common.response.ApiResponseDto;
 import com.example.CacheBoost.domain.auth.AuthUser;
 import com.example.CacheBoost.domain.searchhistory.dto.ResponseDto.SearchHistoryResponseDto;
-import com.example.CacheBoost.domain.searchhistory.service.CachedSearchHistoryService;
+import com.example.CacheBoost.domain.searchhistory.service.CachedSearchHistoryServiceImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,22 +16,20 @@ import java.util.List;
 @RequestMapping("/api/v2")
 public class CachedSearchHistoryController {
 
-    private final CachedSearchHistoryService cachedSearchHistoryService;
+    private final CachedSearchHistoryServiceImpl cachedSearchHistoryService;
 
     public CachedSearchHistoryController(
-            @Qualifier("searchHistoryCacheService") CachedSearchHistoryService cachedSearchHistoryService
+            @Qualifier("searchHistoryCacheService") CachedSearchHistoryServiceImpl cachedSearchHistoryService
             ) {
 
         this.cachedSearchHistoryService = cachedSearchHistoryService;
     }
 
     @GetMapping("/search-history")
-    public ResponseEntity<ApiResponseDto<Page<SearchHistoryResponseDto>>> getSearchHistories(
-            @AuthUser Long userId,
-            @RequestParam String keyword,
-            @PageableDefault(size = 10) Pageable pageable
+    public ResponseEntity<ApiResponseDto<List<SearchHistoryResponseDto>>> getSearchHistories(
+            @AuthUser Long userId
     ) {
-        Page<SearchHistoryResponseDto> results = cachedSearchHistoryService.getSearchHistories(userId, keyword, pageable);
+        List<SearchHistoryResponseDto> results = cachedSearchHistoryService.getSearchHistories(userId);
         return ResponseEntity.ok(ApiResponseDto.success(SuccessCode.SEARCH_HISTORY_SUCCESS, results));
     }
 
