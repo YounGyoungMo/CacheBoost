@@ -1,7 +1,9 @@
 package com.example.CacheBoost.domain.searchkeyword.controller;
 
 import com.example.CacheBoost.common.response.ApiResponseDto;
+import com.example.CacheBoost.domain.searchkeyword.dto.ResponseDto.PopularKeywordTop5ResponseDto;
 import com.example.CacheBoost.domain.searchkeyword.dto.ResponseDto.SearchKeywordResponseDto;
+import com.example.CacheBoost.domain.searchkeyword.service.CacheSearchKeywordService;
 import com.example.CacheBoost.domain.searchkeyword.service.SearchKeywordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchKeywordController {
     private final SearchKeywordService searchKeywordService;
+    private final CacheSearchKeywordService cacheSearchKeywordService;
     
     // 인기 검색어 조회
     @GetMapping("/api/v1/keywords/popular")
@@ -23,6 +26,13 @@ public class SearchKeywordController {
         List<SearchKeywordResponseDto> searchKeywords = searchKeywordService.getSearchKeywords();
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseDto.success(SuccessCode.SEARCH_KEYWORD_SUCCESS, searchKeywords));
+    }
+
+    @GetMapping("/api/v2/keywords/popular")
+    public ResponseEntity<ApiResponseDto<List<PopularKeywordTop5ResponseDto>>> getSearchKeywordsV2() {
+        List<PopularKeywordTop5ResponseDto> searchKeywords = cacheSearchKeywordService.getSearchKeywords();
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponseDto.success(SuccessCode.SEARCH_KEYWORD_SUCCESS, searchKeywords));
     }
 
 }
